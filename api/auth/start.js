@@ -8,7 +8,7 @@ export default function handler(req, res) {
     client_id: process.env.WEBFLOW_CLIENT_ID,
     redirect_uri: `${getBaseUrl(req)}/api/auth/callback`,
     response_type: 'code',
-    scope: 'cms:read',
+    scope: 'cms:read sites:read',
     state,
   });
 
