@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
   if (!code || !state || !cookieState || state !== cookieState) {
     res.writeHead(400, { 'Content-Type': 'text/plain' });
-    res.end('OAuth state inválido o ausente. Intenta conectar de nuevo.');
+    res.end('Invalid or missing OAuth state. Please try connecting again.');
     return;
   }
 
@@ -50,6 +50,6 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error('[auth/callback]', err.response?.data || err.message);
     res.writeHead(500, { 'Content-Type': 'text/plain' });
-    res.end('Error conectando con Webflow. Revisa los logs del servidor.');
+    res.end('Error connecting to Webflow. Check the server logs.');
   }
 }

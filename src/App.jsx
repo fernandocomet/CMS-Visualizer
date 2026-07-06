@@ -38,7 +38,7 @@ export default function App() {
     setLoading(true);
 
     try {
-      setProgress("Leyendo colecciones...");
+      setProgress("Loading collections...");
       const res = await axios.get('/api/collections', { withCredentials: true });
 
       const basicCollections = res.data.collections || [];
@@ -47,7 +47,7 @@ export default function App() {
       // Carga secuencial para evitar el error 429
       for (let i = 0; i < basicCollections.length; i++) {
         const col = basicCollections[i];
-        setProgress(`Cargando: ${col.displayName} (${i + 1}/${basicCollections.length})`);
+        setProgress(`Loading: ${col.displayName} (${i + 1}/${basicCollections.length})`);
 
         const detailRes = await axios.get(`/api/collections/${col.id}`, { withCredentials: true });
 
@@ -92,9 +92,9 @@ export default function App() {
       } else {
         const data = error.response?.data;
         const msg = (typeof data === 'string' ? data : data?.message || data?.msg || data?.error) || error.message;
-        let userMsg = "Error de conexión.";
-        if (!error.response) userMsg = "Error de red. ¿El servidor está corriendo?";
-        else if (status === 429) userMsg = "Límite de tasa alcanzado. Espera 1 minuto.";
+        let userMsg = "Connection error.";
+        if (!error.response) userMsg = "Network error. Is the server running?";
+        else if (status === 429) userMsg = "Rate limit reached. Wait 1 minute.";
         else if (msg) userMsg += ` ${msg}`;
         alert(userMsg);
       }
@@ -150,7 +150,7 @@ export default function App() {
     return (
       <div style={{ width: '100vw', height: '100vh', background: '#F8FAFC', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <button onClick={onConnect} style={{ background: '#4f46e5', color: 'white', border: 'none', padding: '16px 28px', borderRadius: '10px', cursor: 'pointer', fontWeight: '600', fontSize: '15px' }}>
-          🔗 Conectar tu sitio de Webflow
+          🔗 Connect your Webflow site
         </button>
       </div>
     );
@@ -160,13 +160,13 @@ export default function App() {
     <div style={{ width: '100vw', height: '100vh', background: '#F8FAFC' }}>
       <div style={{ position: 'absolute', top: 20, left: 20, zIndex: 10, display: 'flex', gap: '10px' }}>
         <button onClick={fetchWebflowData} disabled={loading} style={{ background: '#4f46e5', color: 'white', border: 'none', padding: '12px 20px', borderRadius: '10px', cursor: 'pointer', fontWeight: '600' }}>
-          {loading ? progress : '🔄 Sincronizar'}
+          {loading ? progress : '🔄 Sync'}
         </button>
         <button onClick={onDownload} style={{ background: '#10b981', color: 'white', border: 'none', padding: '12px 20px', borderRadius: '10px', cursor: 'pointer', fontWeight: '600' }}>
-          📸 Descargar PNG
+          📸 Download PNG
         </button>
         <button onClick={onDisconnect} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '12px 20px', borderRadius: '10px', cursor: 'pointer', fontWeight: '600' }}>
-          ⛔ Desconectar
+          ⛔ Disconnect
         </button>
       </div>
 
