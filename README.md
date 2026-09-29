@@ -37,3 +37,4 @@ Note: the OAuth flow requires an HTTPS redirect URI, so it can't be fully tested
    - `WEBFLOW_CLIENT_ID`, `WEBFLOW_CLIENT_SECRET` (from step 3)
    - `DATABASE_URL` (from step 2)
    - `TOKEN_ENCRYPTION_KEY` — a random base64-encoded 32-byte key, e.g. `openssl rand -base64 32`
+   - `APP_URL` — your canonical production URL, e.g. `https://cms-visualizer-ten.vercel.app` (must match the Redirect URI domain registered in Webflow)

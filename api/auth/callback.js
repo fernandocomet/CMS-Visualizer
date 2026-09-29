@@ -6,13 +6,32 @@ import { ensureSchema, upsertSite, createSession } from '../../lib/db.js';
 const SESSION_TTL_DAYS = 30;
 
 export default async function handler(req, res) {
-  const { code, state } = req.query;
+  const { code, state, error } = req.query;
   const cookieState = readCookie(req, STATE_COOKIE);
+
+  if (error) {
+    res.writeHead(302, { Location: '/?auth_error=' + encodeURIComponent(error) });
+    res.end();
+    return;
+  }
+
+  // Instalación iniciada desde Webflow (botón "Install" del dashboard / marketplace):
+  // Webflow llega aquí con ?code= pero SIN state. En vez de fallar, arrancamos
+  // nuestro propio flujo con state; como la app ya está autorizada, Webflow
+  // devolverá al usuario enseguida con un state válido.
+  if (!state) {
+    console.warn('[auth/callback] sin state (instalación desde Webflow) → reinicio del flujo');
+    res.writeHead(302, { Location: '/api/auth/start' });
+    res.end();
+    return;
+  }
+
   clearCookie(res, STATE_COOKIE);
 
-  if (!code || !state || !cookieState || state !== cookieState) {
-    res.writeHead(400, { 'Content-Type': 'text/plain' });
-    res.end('Invalid or missing OAuth state. Please try connecting again.');
+  if (!code || !cookieState || state !== cookieState) {
+    console.warn('[auth/callback] state inválido', { hasCode: !!code, hasCookie: !!cookieState, host: req.headers.host });
+    res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end('<p>Invalid or missing OAuth state.</p><p><a href="/api/auth/start">Try connecting again</a></p>');
     return;
   }
 
